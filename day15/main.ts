@@ -1,6 +1,6 @@
 const fs = require("fs");
 const shift = 2000000;
-const sensors = fs.readFileSync("/Users/rene.borner/Workspace/aoc/AdventOfCode2022/day15/input", "utf8").split('\n').map(points => points.split(':').map(loc => {
+const sensors = fs.readFileSync("day15/input", "utf8").split('\n').map(points => points.split(':').map(loc => {
     return {
         x: +loc.match(/(?<=x=).?\d+/g)[0] + shift,
         y: +loc.match(/(?<=y=).?\d+/g)[0] + shift
@@ -8,8 +8,8 @@ const sensors = fs.readFileSync("/Users/rene.borner/Workspace/aoc/AdventOfCode20
 }));
 
 const tunnels = new Array(6000000);
-const part1 = 2000000 + shift;
-const limit = {
+const line = 2000000 + shift;
+let limit = {
     lower: shift,
     upper: 4000000 + shift
 };
@@ -30,52 +30,55 @@ function draw(x, y, sign) {
     tunnels[y][x] = sign;
 }
 
-function findCoveredSections(part2) {
+function findCoveredSections(simplified, checkLine) {
     sensors.forEach(sensor => {
         for (let i = -sensor[0].distance; i <= sensor[0].distance; i++) {
-            // only draw in needed line for part1
-            if (!part2 && part1 === sensor[0].y + i) {
+            if (!simplified && checkLine === sensor[0].y + i) {
                 if (!Array.isArray(tunnels[sensor[0].y + i])) {
-                    tunnels[sensor[0].y + i] = new Array(sensor[0].x + Math.abs(Math.abs(i) - sensor[0].distance));
-                }
-                drawCoveredSections(sensor[0].x, sensor[0].y + i, Math.abs(Math.abs(i) - sensor[0].distance))
-            } else if (part2 && (sensor[0].y + i <= limit.upper && sensor[0].y + i >= limit.lower)) {
-                if (!Array.isArray(tunnels[sensor[0].y + i])) {
-                    tunnels[sensor[0].y + i] = new Array(sensor[0].x + Math.abs(Math.abs(i) - sensor[0].distance));
+                    tunnels[sensor[0].y + i] = new Array(6000000);
                 }
                 drawCoveredSections(sensor[0].x, sensor[0].y + i, Math.abs(Math.abs(i) - sensor[0].distance))
             }
         }
+        if (simplified && sensor[0].y <= limit.upper && sensor[0].y >= limit.lower) {
+            if (!Array.isArray(tunnels[sensor[0].y])) {
+                tunnels[sensor[0].y] = new Array(6000000);
+            }
+            drawCoveredSections(sensor[0].x, sensor[0].y, sensor[0].distance)
+        }
     })
 }
-
 
 function drawCoveredSections(x, y, distance) {
     let i = 0;
     while (i <= distance) {
-        if (!tunnels[y][x + i]) {
-            tunnels[y][x + i] = "#";
-        }
-        i++;
-    }
-    i = 0;
-    while (i <= distance) {
-        if (!tunnels[y][x - i]) {
-            tunnels[y][x - i] = "#";
-        }
+        tunnels[y][x + i] = "#";
+        tunnels[y][x - i] = "#";
         i++;
     }
 }
 
-findCoveredSections(false);
-const row = part1;
-console.log(tunnels[row].filter(loc => loc === "#").length);
+findCoveredSections(false, line);
+console.log(tunnels[line].filter(loc => loc === "#").length);
 
-findCoveredSections(true);
-for (let i = limit.lower; i <= limit.upper; i++) {
-    for (let j = limit.lower; j <= limit.upper; j++) {
-        if (!tunnels[i][j]) {
-            console.log("found position at ", i, j);
-        }
+findCoveredSections(true, 0);
+let maxCount = 0;
+let index = 0;
+
+tunnels.forEach((field, i) => {
+    const count = field.filter(loc => loc !== undefined).length;
+    if (count > maxCount && i !== line) {
+        index = i;
+        maxCount = count;
+    }
+})
+
+console.log("best line", index, maxCount);
+
+findCoveredSections(false, index);
+
+for (let x = limit.lower; x <= limit.upper; x++) {
+    if (tunnels[index][x] !== "#") {
+        console.log("found position at ", x);
     }
 }
