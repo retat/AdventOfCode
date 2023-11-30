@@ -105,5 +105,5 @@ dist
 
 # Custom
 package-lock.json
-package.json
 .DS_Store
+.fleet/

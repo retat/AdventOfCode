@@ -1,0 +1,15 @@
+{
+  "name": "2022",
+  "description": "Advent of code 2022",
+  "scripts": {
+    "start": "node -r sucrase/register day1/test.ts"
+  },
+  "author": "René Borner",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "nodemon": "^2.0.20",
+    "sucrase": "^3.28.0",
+    "typescript": "^4.8.4"
+  }
+}
