@@ -17,11 +17,11 @@ fs.readFileSync("input", "utf8")
       green: 0,
       blue: 0,
     };
-    const result = game
+    game
       .split(": ")[1]
       .split("; ")
       .map((sets) => {
-        return sets.split(", ").map((set) => {
+        sets.split(", ").map((set) => {
           const gameSet = {
             amount: +set.split(" ")[0],
             color: set.split(" ")[1],
@@ -30,13 +30,11 @@ fs.readFileSync("input", "utf8")
             isGameValid = false;
           if (neededCubes[gameSet.color] < gameSet.amount)
             neededCubes[gameSet.color] = gameSet.amount;
-          return gameSet;
         });
       });
     if (isGameValid)
       invalidGames += Number(game.split(": ")[0].replace(/\D/g, ""));
     power += neededCubes.red * neededCubes.green * neededCubes.blue;
-    return result;
   });
 
 console.log("Part1: ", invalidGames);
