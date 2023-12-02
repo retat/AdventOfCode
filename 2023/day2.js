@@ -8,8 +8,7 @@ const availableCubes = {
 };
 let power = 0;
 
-const games = fs
-  .readFileSync("input", "utf8")
+fs.readFileSync("input", "utf8")
   .split("\n")
   .map((game) => {
     let isGameValid = true;
@@ -39,8 +38,6 @@ const games = fs
     power += neededCubes.red * neededCubes.green * neededCubes.blue;
     return result;
   });
-
-console.table(games[0]);
 
 console.log("Part1: ", invalidGames);
 console.log("Part2: ", power);
