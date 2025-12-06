@@ -2,13 +2,14 @@ const fs = require("fs");
 let part1 = 0;
 let part2 = 0;
 
-let [numbers1, numbers2, numbers3, numbers4, operations] = fs
-  .readFileSync("input", "utf8")
-  .split("\n");
-const numberRow = [[...numbers1], [...numbers2], [...numbers3], [...numbers4]];
-operations = operations.split(/(?=\S)/).map((op) => {
-  return { op: op.trim(), validFor: op.length - 1 };
-});
+let input = fs.readFileSync("input", "utf8").split("\n");
+operations = input
+  .pop()
+  .split(/(?=\S)/)
+  .map((op) => {
+    return { op: op.trim(), validFor: op.length - 1 };
+  });
+const numberRow = input.map((numbers) => numbers.split(""));
 
 let i = 0;
 operations.forEach((entry) => {
